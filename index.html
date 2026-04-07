@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SENA 2026 | Universo del Emprendimiento</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap');
+
+        :root {
+            --bg-color: #030014;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --palet-color: #D4AF37;
+            --bambu-color: #2ecc71;
+            --amaru-color: #ff7675;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+            cursor: none; /* Cursor personalizado */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(46, 204, 113, 0.08), transparent 25%);
+        }
+
+        /* --- FONDO DEL UNIVERSO ANIMADO --- */
+        #stars {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+            background: black url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2048&auto=format&fit=crop') center/cover no-repeat;
+            opacity: 0.4;
+        }
+        .twinkling {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: transparent url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/twinkling.png') repeat top center;
+            animation: move-twink-back 200s linear infinite;
+            opacity: 0.3;
+        }
+        @keyframes move-twink-back { from {background-position: 0 0;} to {background-position: -10000px 5000px;} }
+
+        /* --- CURSOR Y EFECTO LINTERNA --- */
+        .cursor-dot {
+            width: 8px; height: 8px; background: white; border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
+        }
+        .cursor-glow {
+            width: 300px; height: 300px; 
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
+            border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998;
+            transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s;
+        }
+
+        /* --- NAVEGACIÓN (BOTONES) --- */
+        header {
+            text-align: center; padding: 40px 20px; position: relative; z-index: 10;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+        }
+        h1 { font-family: 'Playfair Display', serif; font-size: 3.5rem; margin-bottom: 10px; }
+        .subtitle { color: #aaa; margin-bottom: 30px; font-weight: 300; }
+        
+        .nav-buttons {
+            display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+        }
+        .nav-btn {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            color: white; padding: 15px 30px; border-radius: 30px; font-size: 1.1rem;
+            backdrop-filter: blur(10px); transition: 0.4s; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .nav-btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-5px); }
+        .nav-btn.active-palet { border-color: var(--palet-color); box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
+        .nav-btn.active-bambu { border-color: var(--bambu-color); box-shadow: 0 0 20px rgba(46, 204, 113, 0.4); }
+        .nav-btn.active-amaru { border-color: var(--amaru-color); box-shadow: 0 0 20px rgba(255, 118, 117, 0.4); }
+
+        /* --- CONTENEDOR DE PROYECTOS --- */
+        .projects-wrapper {
+            max-width: 1300px; margin: 0 auto; padding: 20px; position: relative; z-index: 10;
+        }
+        .project-section {
+            display: none; /* Ocultos por defecto */
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        .project-section.active { display: block; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .project-header { text-align: center; margin-bottom: 50px; }
+        .project-header h2 { font-family: 'Playfair Display', serif; font-size: 4rem; }
+        .palet-text { color: var(--palet-color); }
+        .bambu-text { color: var(--bambu-color); }
+        .amaru-text { color: var(--amaru-color); }
+
+        /* --- BENTO GRID (TARJETAS INTERACTIVAS) --- */
+        .bento-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;
+        }
+        .card {
+            background: rgba(10, 10, 10, 0.6); border: 1px solid var(--glass-border);
+            border-radius: 20px; padding: 35px; backdrop-filter: blur(15px);
+            position: relative; overflow: hidden; transition: 0.4s;
+        }
+        /* Efecto de borde superior de color */
+        #sec-palet .card { border-top: 3px solid var(--palet-color); }
+        #sec-bambu .card { border-top: 3px solid var(--bambu-color); }
+        #sec-amaru .card { border-top: 3px solid var(--amaru-color); }
+
+        .card:hover { transform: translateY(-10px); background: rgba(20, 20, 20, 0.8); }
+        .card h3 { font-size: 1.6rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .card p { color: #bbb; line-height: 1.6; font-size: 1rem; }
+
+        /* --- SECRETOS REVELADOS AL PASAR EL RATÓN --- */
+        .secret-reveal {
+            margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem; font-weight: 300; opacity: 0; transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+        #sec-palet .secret-reveal { color: var(--palet-color); }
+        #sec-bambu .secret-reveal { color: var(--bambu-color); }
+        #sec-amaru .secret-reveal { color: var(--amaru-color); }
+        
+        .card:hover .secret-reveal { opacity: 1; transform: translateY(0); }
+
+    </style>
+</head>
+<body>
+
+    <div id="stars"></div>
+    <div class="twinkling"></div>
+
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-glow" id="cursor-glow"></div>
+
+    <header>
+        <h1>Universo Emprendedor SENA</h1>
+        <p class="subtitle">Tres visiones. Tres soluciones. Un mismo futuro. (Usa el ratón para descubrir los secretos)</p>
+        
+        <div class="nav-buttons">
+            <button class="nav-btn active-palet" onclick="showProject('sec-palet', this, 'active-palet')">1. PaletDo27</button>
+            <button class="nav-btn" onclick="showProject('sec-bambu', this, 'active-bambu')">2. Bambugraft</button>
+            <button class="nav-btn" onclick="showProject('sec-amaru', this, 'active-amaru')">3. Amarú Cosmetics</button>
+        </div>
+    </header>
+
+    <main class="projects-wrapper">
+
+        <section id="sec-palet" class="project-section active">
+            <div class="project-header">
+                <h2 class="palet-text">PaletDo27</h2>
+                <p>"La nueva era del brindis consciente"</p>
+            </div>
+            <div class="bento-grid">
+                <div class="card">
+                    <h3>🍸 La Idea</h3>
+                    <p>Coctelería premium sin alcohol diseñada para quienes desean pasar un momento en familia o con amigos y sentirse incluidos sin la presión de ingerir alcohol.</p>
+                    <div class="secret-reveal"><strong>Secreto:</strong> El que elige cosas fuertes es porque quiere demostrar una imagen falsa al público.</div>
+                </div>
+                <div class="card">
+                    <h3>🧠 La Necesidad Oculta</h3>
+                    <p>Cubre la necesidad más importante de la sociedad actual: "Encajar". Funciona como aperitivo para iniciar o como el cierre perfecto de una gran noche.</p>
+                    <div class="secret-reveal"><strong>Psicología:</strong> Alguien que toma poco se siente y se ve importante con nuestra copa en mano.</div>
+                </div>
+                <div class="card">
+                    <h3>🛡️ Beneficios Reales</h3>
+                    <p>Seguridad física, bienestar mental e inclusión total. Puedes manejar o hacer cualquier tipo de actividad al día siguiente (o en unas horas) sin impedimentos.</p>
+                    <div class="secret-reveal"><strong>Impacto:</strong> 0% Resaca. 100% Control de tus decisiones y tu mañana.</div>
+                </div>
+                <div class="card">
+                    <h3>📈 Modelo de Negocio</h3>
+                    <p>Es un Proyecto SENA de perfil ejecutivo. Nos alejamos de las redes sociales masivas para enfocarnos en la exclusividad, los brochures corporativos y las alianzas estratégicas.</p>
+                    <div class="secret-reveal"><strong>Estrategia:</strong> Posicionamiento B2B mediante documentos empresariales de alto diseño (Canva/GitHub).</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-bambu" class="project-section">
+            <div class="project-header">
+                <h2 class="bambu-text">Bambugraft</h2>
+                <p>"Escribe con conciencia, escribe Bambugraft"</p>
+            </div>
+            <div class="bento-grid">
+                <div class="card">
+                    <h3>✍️ El Problema</h3>
+                    <p>La inmensa contaminación de plástico generada por los lapiceros normales de un solo uso que terminan en los océanos y vertederos cada día.</p>
+                    <div class="secret-reveal"><strong>Solución:</strong> Reemplazar el contaminante plástico en el mercado de útiles escolares y de oficina.</div>
+                </div>
+                <div class="card">
+                    <h3>🎋 El Producto</h3>
+                    <p>Un lapicero ecológico 100% hecho en madera de bambú biodegradable. Cuenta con acabados personalizados que combinan la funcionalidad con el diseño elegante.</p>
+                    <div class="secret-reveal"><strong>Innovación:</strong> Diseño ergonómico que conecta al usuario con la naturaleza en cada trazo.</div>
+                </div>
+                <div class="card">
+                    <h3>♻️ Fin de Vida Útil</h3>
+                    <p>Nuestra mayor ventaja: Cuando la tinta se acaba, no importa dónde lo deseches. Al ser de bambú, será un producto 0% contaminante que volverá a la tierra.</p>
+                    <div class="secret-reveal"><strong>Beneficio:</strong> Ganas una experiencia de compra consciente y reduces tu huella de carbono personal.</div>
+                </div>
+                <div class="card">
+                    <h3>📱 Plan de Acción</h3>
+                    <p>Canales de distribución activos: Instagram, TikTok, Facebook y posicionamiento estratégico en papelerías físicas mediante carteles publicitarios.</p>
+                    <div class="secret-reveal"><strong>Marketing:</strong> Mostramos el proceso de creación y la ganancia ambiental en redes sociales.</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-amaru" class="project-section">
+            <div class="project-header">
+                <h2 class="amaru-text">Amarú Cosmetics</h2>
+                <p>"Cultura Organizacional y Belleza Sostenible"</p>
+            </div>
+            <div class="bento-grid">
+                <div class="card">
+                    <h3>👥 El Equipo</h3>
+                    <p>Proyecto desarrollado por el Instituto Luis Carlos Galán Sarmiento (10-2, Año 2025). Creado por Alix Galvis, Dasly Sandoval y Johan Mendoza.</p>
+                    <div class="secret-reveal"><strong>Misión:</strong> Revolucionar la cosmética desde el aula hasta el mercado real.</div>
+                </div>
+                <div class="card">
+                    <h3>🌿 Cosmética Limpia</h3>
+                    <p>Desarrollo de prototipos de productos estéticos basados en materiales directos e indirectos altamente investigados, priorizando fórmulas naturales que cuidan la piel.</p>
+                    <div class="secret-reveal"><strong>Diferenciación:</strong> Impacto social y económico positivo frente a los químicos tradicionales.</div>
+                </div>
+                <div class="card">
+                    <h3>📦 Política Ambiental</h3>
+                    <p>Responsabilidad social corporativa aplicada. El empaque del producto está diseñado bajo estrictas políticas ambientales para evitar la generación de residuos tóxicos.</p>
+                    <div class="secret-reveal"><strong>Sostenibilidad:</strong> Empaques biodegradables y cultura de cero desperdicios.</div>
+                </div>
+                <div class="card">
+                    <h3>📊 Plan Financiero</h3>
+                    <p>Estructura sólida que incluye investigación de mercado, costos de producción optimizados y una estrategia de marketing apoyada en afiches publicitarios interactivos.</p>
+                    <div class="secret-reveal"><strong>Proyección 2026:</strong> Expansión del display publicitario y escalabilidad del producto.</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- LOGICA DE NAVEGACIÓN (SINGLE PAGE APPLICATION) ---
+        function showProject(sectionId, btnElement, activeClass) {
+            // 1. Ocultar todas las secciones
+            const sections = document.querySelectorAll('.project-section');
+            sections.forEach(sec => {
+                sec.classList.remove('active');
+            });
+
+            // 2. Quitar estilos activos de todos los botones
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => {
+                btn.className = 'nav-btn'; // Resetea las clases
