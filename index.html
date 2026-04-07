@@ -3,254 +3,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SENA 2026 | Universo del Emprendimiento</title>
+    <title>Feria SENA | Brochures Digitales Interactivos</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@0,700;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap');
 
         :root {
-            --bg-color: #030014;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --palet-color: #D4AF37;
-            --bambu-color: #2ecc71;
-            --amaru-color: #ff7675;
+            --bg-dark: #0a0a0c;
+            --palet-gold: #D4AF37;
+            --bambu-green: #2ecc71;
+            --amaru-pink: #ff7675;
+            --text-main: #e0e0e0;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Outfit', sans-serif;
-            cursor: none; /* Cursor personalizado */
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
 
         body {
-            background-color: var(--bg-color);
-            color: #fff;
-            min-height: 100vh;
-            overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.08), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(46, 204, 113, 0.08), transparent 25%);
+            background-color: var(--bg-dark); color: var(--text-main);
+            overflow-y: hidden; 
+            background-image: radial-gradient(circle at center, #1a1a24 0%, #050505 100%);
         }
 
-        /* --- FONDO DEL UNIVERSO ANIMADO --- */
-        #stars {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
-            background: black url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2048&auto=format&fit=crop') center/cover no-repeat;
-            opacity: 0.4;
-        }
-        .twinkling {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background: transparent url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1231630/twinkling.png') repeat top center;
-            animation: move-twink-back 200s linear infinite;
-            opacity: 0.3;
-        }
-        @keyframes move-twink-back { from {background-position: 0 0;} to {background-position: -10000px 5000px;} }
-
-        /* --- CURSOR Y EFECTO LINTERNA --- */
-        .cursor-dot {
-            width: 8px; height: 8px; background: white; border-radius: 50%;
-            position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%);
-        }
-        .cursor-glow {
-            width: 300px; height: 300px; 
-            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
-            border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998;
-            transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s;
+        #glow-orb {
+            position: fixed; width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%);
+            border-radius: 50%; pointer-events: none; z-index: 0;
+            transform: translate(-50%, -50%); transition: background 0.3s;
         }
 
-        /* --- NAVEGACIÓN (BOTONES) --- */
+        /* --- NAVEGACIÓN --- */
         header {
-            text-align: center; padding: 40px 20px; position: relative; z-index: 10;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            position: fixed; top: 0; left: 0; width: 100%; height: 80px;
+            background: rgba(10, 10, 12, 0.9); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex; justify-content: center; align-items: center; gap: 20px; z-index: 100;
         }
-        h1 { font-family: 'Playfair Display', serif; font-size: 3.5rem; margin-bottom: 10px; }
-        .subtitle { color: #aaa; margin-bottom: 30px; font-weight: 300; }
+
+        .tab-btn {
+            background: transparent; border: 1px solid rgba(255,255,255,0.3);
+            color: white; padding: 10px 25px; border-radius: 5px; font-size: 1rem;
+            cursor: pointer; transition: all 0.3s; text-transform: uppercase; font-weight: 600;
+        }
+        .tab-btn:hover { background: rgba(255,255,255,0.1); }
+        .active-palet { background: var(--palet-gold); color: black; border-color: var(--palet-gold); }
+        .active-bambu { background: var(--bambu-green); color: black; border-color: var(--bambu-green); }
+        .active-amaru { background: var(--amaru-pink); color: black; border-color: var(--amaru-pink); }
+
+        /* --- BROCHURE HORIZONTAL --- */
+        .brochure-container {
+            display: none; height: 100vh; padding-top: 80px; padding-bottom: 40px;
+            overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory;
+            white-space: nowrap; z-index: 10; position: relative;
+        }
+        .brochure-container::-webkit-scrollbar { height: 10px; }
+        .brochure-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 5px; }
+
+        .panel {
+            display: inline-block; width: 80vw; max-width: 600px; height: 100%;
+            margin-left: 20px; scroll-snap-align: center;
+            background: rgba(25, 25, 30, 0.6); backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.05); white-space: normal; vertical-align: top; padding: 50px;
+            box-shadow: inset -15px 0 30px rgba(0,0,0,0.5), 10px 0 20px rgba(0,0,0,0.4);
+            border-radius: 5px; position: relative; transition: transform 0.3s;
+        }
+
+        .panel h2 { font-family: 'Cinzel', serif; font-size: 2.5rem; margin-bottom: 20px; text-transform: uppercase; }
+        .panel h3 { font-size: 1.5rem; margin-bottom: 15px; color: #aaa; }
+        .panel p { font-size: 1.1rem; line-height: 1.8; color: #ddd; margin-bottom: 20px; text-align: justify; }
         
-        .nav-buttons {
-            display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+        /* Imagen Interactiva */
+        .img-container { position: relative; margin-bottom: 20px; cursor: pointer; }
+        .img-container img { width: 100%; height: 250px; object-fit: cover; border-radius: 5px; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
+        .img-container:hover img { filter: brightness(0.6); }
+        .interactive-btn {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8); color: white; padding: 10px 20px; border-radius: 30px;
+            border: 1px solid white; opacity: 0; transition: 0.3s; font-weight: bold; letter-spacing: 1px;
         }
-        .nav-btn {
-            background: var(--glass-bg); border: 1px solid var(--glass-border);
-            color: white; padding: 15px 30px; border-radius: 30px; font-size: 1.1rem;
-            backdrop-filter: blur(10px); transition: 0.4s; text-transform: uppercase; letter-spacing: 1px;
-        }
-        .nav-btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-5px); }
-        .nav-btn.active-palet { border-color: var(--palet-color); box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
-        .nav-btn.active-bambu { border-color: var(--bambu-color); box-shadow: 0 0 20px rgba(46, 204, 113, 0.4); }
-        .nav-btn.active-amaru { border-color: var(--amaru-color); box-shadow: 0 0 20px rgba(255, 118, 117, 0.4); }
+        .img-container:hover .interactive-btn { opacity: 1; }
 
-        /* --- CONTENEDOR DE PROYECTOS --- */
-        .projects-wrapper {
-            max-width: 1300px; margin: 0 auto; padding: 20px; position: relative; z-index: 10;
+        #brochure-palet .panel h2 { color: var(--palet-gold); }
+        #brochure-bambu .panel h2 { color: var(--bambu-green); }
+        #brochure-amaru .panel h2 { color: var(--amaru-pink); }
+
+        /* --- SISTEMA MODAL (VENTANA EMERGENTE) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
+            z-index: 1000; display: none; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.4s ease;
         }
-        .project-section {
-            display: none; /* Ocultos por defecto */
-            animation: fadeIn 0.8s ease-out forwards;
+        .modal-content {
+            background: #111; border: 1px solid rgba(255,255,255,0.2);
+            width: 90%; max-width: 600px; padding: 40px; border-radius: 15px;
+            position: relative; transform: scale(0.8); transition: transform 0.4s ease;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8); max-height: 90vh; overflow-y: auto;
         }
-        .project-section.active { display: block; }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-overlay.active .modal-content { transform: scale(1); }
         
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-        .project-header { text-align: center; margin-bottom: 50px; }
-        .project-header h2 { font-family: 'Playfair Display', serif; font-size: 4rem; }
-        .palet-text { color: var(--palet-color); }
-        .bambu-text { color: var(--bambu-color); }
-        .amaru-text { color: var(--amaru-color); }
-
-        /* --- BENTO GRID (TARJETAS INTERACTIVAS) --- */
-        .bento-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;
+        .close-btn {
+            position: absolute; top: 20px; right: 20px; background: none; border: none;
+            color: white; font-size: 2rem; cursor: pointer; transition: 0.3s;
         }
-        .card {
-            background: rgba(10, 10, 10, 0.6); border: 1px solid var(--glass-border);
-            border-radius: 20px; padding: 35px; backdrop-filter: blur(15px);
-            position: relative; overflow: hidden; transition: 0.4s;
-        }
-        /* Efecto de borde superior de color */
-        #sec-palet .card { border-top: 3px solid var(--palet-color); }
-        #sec-bambu .card { border-top: 3px solid var(--bambu-color); }
-        #sec-amaru .card { border-top: 3px solid var(--amaru-color); }
+        .close-btn:hover { color: red; transform: rotate(90deg); }
 
-        .card:hover { transform: translateY(-10px); background: rgba(20, 20, 20, 0.8); }
-        .card h3 { font-size: 1.6rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-        .card p { color: #bbb; line-height: 1.6; font-size: 1rem; }
-
-        /* --- SECRETOS REVELADOS AL PASAR EL RATÓN --- */
-        .secret-reveal {
-            margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);
-            font-size: 0.9rem; font-weight: 300; opacity: 0; transform: translateY(20px);
-            transition: all 0.4s ease;
-        }
-        #sec-palet .secret-reveal { color: var(--palet-color); }
-        #sec-bambu .secret-reveal { color: var(--bambu-color); }
-        #sec-amaru .secret-reveal { color: var(--amaru-color); }
-        
-        .card:hover .secret-reveal { opacity: 1; transform: translateY(0); }
+        .modal-title { font-family: 'Cinzel', serif; font-size: 2.2rem; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        .modal-section { margin-bottom: 20px; }
+        .modal-section h4 { font-size: 1.1rem; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .modal-section p { font-size: 1rem; color: #ccc; line-height: 1.6; text-align: justify; }
 
     </style>
 </head>
 <body>
 
-    <div id="stars"></div>
-    <div class="twinkling"></div>
-
-    <div class="cursor-dot" id="cursor-dot"></div>
-    <div class="cursor-glow" id="cursor-glow"></div>
+    <div id="glow-orb"></div>
 
     <header>
-        <h1>Universo Emprendedor SENA</h1>
-        <p class="subtitle">Tres visiones. Tres soluciones. Un mismo futuro. (Usa el ratón para descubrir los secretos)</p>
-        
-        <div class="nav-buttons">
-            <button class="nav-btn active-palet" onclick="showProject('sec-palet', this, 'active-palet')">1. PaletDo27</button>
-            <button class="nav-btn" onclick="showProject('sec-bambu', this, 'active-bambu')">2. Bambugraft</button>
-            <button class="nav-btn" onclick="showProject('sec-amaru', this, 'active-amaru')">3. Amarú Cosmetics</button>
-        </div>
+        <button class="tab-btn active-palet" onclick="openBrochure('brochure-palet', this, 'active-palet')">PaletDo27</button>
+        <button class="tab-btn" onclick="openBrochure('brochure-bambu', this, 'active-bambu')">Bambugraft</button>
+        <button class="tab-btn" onclick="openBrochure('brochure-amaru', this, 'active-amaru')">Amarú Cosmetics</button>
     </header>
 
-    <main class="projects-wrapper">
+    <div id="brochure-palet" class="brochure-container" style="display: block;">
+        <div class="panel">
+            <h2>PaletDo27</h2>
+            <h3>La era del brindis consciente</h3>
+            
+            <div class="img-container" onclick="openModal('palet_coctel')">
+                <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=800&q=80" alt="Cóctel PaletDo27">
+                <div class="interactive-btn">[ + DESCUBRIR MÁS ]</div>
+            </div>
+            
+            <p>Un brochure interactivo que redefine lo que significa celebrar. Desliza a la derecha para leer, o toca la imagen para profundizar en nuestra ingeniería sensorial.</p>
+        </div>
 
-        <section id="sec-palet" class="project-section active">
-            <div class="project-header">
-                <h2 class="palet-text">PaletDo27</h2>
-                <p>"La nueva era del brindis consciente"</p>
-            </div>
-            <div class="bento-grid">
-                <div class="card">
-                    <h3>🍸 La Idea</h3>
-                    <p>Coctelería premium sin alcohol diseñada para quienes desean pasar un momento en familia o con amigos y sentirse incluidos sin la presión de ingerir alcohol.</p>
-                    <div class="secret-reveal"><strong>Secreto:</strong> El que elige cosas fuertes es porque quiere demostrar una imagen falsa al público.</div>
-                </div>
-                <div class="card">
-                    <h3>🧠 La Necesidad Oculta</h3>
-                    <p>Cubre la necesidad más importante de la sociedad actual: "Encajar". Funciona como aperitivo para iniciar o como el cierre perfecto de una gran noche.</p>
-                    <div class="secret-reveal"><strong>Psicología:</strong> Alguien que toma poco se siente y se ve importante con nuestra copa en mano.</div>
-                </div>
-                <div class="card">
-                    <h3>🛡️ Beneficios Reales</h3>
-                    <p>Seguridad física, bienestar mental e inclusión total. Puedes manejar o hacer cualquier tipo de actividad al día siguiente (o en unas horas) sin impedimentos.</p>
-                    <div class="secret-reveal"><strong>Impacto:</strong> 0% Resaca. 100% Control de tus decisiones y tu mañana.</div>
-                </div>
-                <div class="card">
-                    <h3>📈 Modelo de Negocio</h3>
-                    <p>Es un Proyecto SENA de perfil ejecutivo. Nos alejamos de las redes sociales masivas para enfocarnos en la exclusividad, los brochures corporativos y las alianzas estratégicas.</p>
-                    <div class="secret-reveal"><strong>Estrategia:</strong> Posicionamiento B2B mediante documentos empresariales de alto diseño (Canva/GitHub).</div>
-                </div>
-            </div>
-        </section>
+        <div class="panel">
+            <h2>El Origen</h2>
+            <h3>Historia de la Coctelería</h3>
+            <p>La coctelería sin alcohol nació en 1930 con el "Shirley Temple", pero PaletDo27 ha evolucionado ese concepto. Ya no mezclamos simples jugos; creamos perfiles botánicos complejos para paladares exigentes que no desean ingerir etanol.</p>
+        </div>
 
-        <section id="sec-bambu" class="project-section">
-            <div class="project-header">
-                <h2 class="bambu-text">Bambugraft</h2>
-                <p>"Escribe con conciencia, escribe Bambugraft"</p>
+        <div class="panel">
+            <h2>El Arte de Encajar</h2>
+            
+            <div class="img-container" onclick="openModal('palet_psicologia')">
+                <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=800&q=80" alt="Evento Social">
+                <div class="interactive-btn">[ ANÁLISIS PSICOLÓGICO ]</div>
             </div>
-            <div class="bento-grid">
-                <div class="card">
-                    <h3>✍️ El Problema</h3>
-                    <p>La inmensa contaminación de plástico generada por los lapiceros normales de un solo uso que terminan en los océanos y vertederos cada día.</p>
-                    <div class="secret-reveal"><strong>Solución:</strong> Reemplazar el contaminante plástico en el mercado de útiles escolares y de oficina.</div>
-                </div>
-                <div class="card">
-                    <h3>🎋 El Producto</h3>
-                    <p>Un lapicero ecológico 100% hecho en madera de bambú biodegradable. Cuenta con acabados personalizados que combinan la funcionalidad con el diseño elegante.</p>
-                    <div class="secret-reveal"><strong>Innovación:</strong> Diseño ergonómico que conecta al usuario con la naturaleza en cada trazo.</div>
-                </div>
-                <div class="card">
-                    <h3>♻️ Fin de Vida Útil</h3>
-                    <p>Nuestra mayor ventaja: Cuando la tinta se acaba, no importa dónde lo deseches. Al ser de bambú, será un producto 0% contaminante que volverá a la tierra.</p>
-                    <div class="secret-reveal"><strong>Beneficio:</strong> Ganas una experiencia de compra consciente y reduces tu huella de carbono personal.</div>
-                </div>
-                <div class="card">
-                    <h3>📱 Plan de Acción</h3>
-                    <p>Canales de distribución activos: Instagram, TikTok, Facebook y posicionamiento estratégico en papelerías físicas mediante carteles publicitarios.</p>
-                    <div class="secret-reveal"><strong>Marketing:</strong> Mostramos el proceso de creación y la ganancia ambiental en redes sociales.</div>
-                </div>
-            </div>
-        </section>
 
-        <section id="sec-amaru" class="project-section">
-            <div class="project-header">
-                <h2 class="amaru-text">Amarú Cosmetics</h2>
-                <p>"Cultura Organizacional y Belleza Sostenible"</p>
-            </div>
-            <div class="bento-grid">
-                <div class="card">
-                    <h3>👥 El Equipo</h3>
-                    <p>Proyecto desarrollado por el Instituto Luis Carlos Galán Sarmiento (10-2, Año 2025). Creado por Alix Galvis, Dasly Sandoval y Johan Mendoza.</p>
-                    <div class="secret-reveal"><strong>Misión:</strong> Revolucionar la cosmética desde el aula hasta el mercado real.</div>
-                </div>
-                <div class="card">
-                    <h3>🌿 Cosmética Limpia</h3>
-                    <p>Desarrollo de prototipos de productos estéticos basados en materiales directos e indirectos altamente investigados, priorizando fórmulas naturales que cuidan la piel.</p>
-                    <div class="secret-reveal"><strong>Diferenciación:</strong> Impacto social y económico positivo frente a los químicos tradicionales.</div>
-                </div>
-                <div class="card">
-                    <h3>📦 Política Ambiental</h3>
-                    <p>Responsabilidad social corporativa aplicada. El empaque del producto está diseñado bajo estrictas políticas ambientales para evitar la generación de residuos tóxicos.</p>
-                    <div class="secret-reveal"><strong>Sostenibilidad:</strong> Empaques biodegradables y cultura de cero desperdicios.</div>
-                </div>
-                <div class="card">
-                    <h3>📊 Plan Financiero</h3>
-                    <p>Estructura sólida que incluye investigación de mercado, costos de producción optimizados y una estrategia de marketing apoyada en afiches publicitarios interactivos.</p>
-                    <div class="secret-reveal"><strong>Proyección 2026:</strong> Expansión del display publicitario y escalabilidad del producto.</div>
-                </div>
-            </div>
-        </section>
+            <p>Vivimos en una sociedad donde una copa en la mano es un símbolo de estatus. Quien elige PaletDo27, elige autenticidad y libertad, sin sacrificar su imagen corporativa o familiar.</p>
+        </div>
+    </div>
 
-    </main>
+    <div id="brochure-bambu" class="brochure-container">
+        <div class="panel">
+            <h2>Bambugraft</h2>
+            <h3>Escribe con conciencia</h3>
+            
+            <div class="img-container" onclick="openModal('bambu_lapicero')">
+                <img src="https://images.unsplash.com/photo-1585336261022-680e295ce3fe?auto=format&fit=crop&w=800&q=80" alt="Bambú">
+                <div class="interactive-btn">[ VER CICLO DE VIDA ]</div>
+            </div>
+            
+            <p>Más que un lapicero, es una declaración de principios frente a la contaminación plástica. Toca la imagen para conocer el secreto del bambú.</p>
+        </div>
+
+        <div class="panel">
+            <h2>Fin del Plástico</h2>
+            <h3>100% Ecológico</h3>
+            <p>Se estima que cada año se desechan más de 10,000 millones de lapiceros plásticos. Bambugraft utiliza madera de bambú (la planta de más rápido crecimiento en la Tierra) para crear una alternativa que vuelve a la naturaleza sin dejar huella tóxica.</p>
+        </div>
+    </div>
+
+    <div id="brochure-amaru" class="brochure-container">
+        <div class="panel">
+            <h2>Amarú Cosmetics</h2>
+            <h3>Cultura Organizacional Verde</h3>
+            
+            <div class="img-container" onclick="openModal('amaru_cosmetica')">
+                <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=800&q=80" alt="Cosmética natural">
+                <div class="interactive-btn">[ INGREDIENTES SECRETOS ]</div>
+            </div>
+            
+            <p>Descubre el trabajo del Instituto Luis Carlos Galán Sarmiento. Toca la imagen para desglosar la fórmula y el impacto económico de nuestro proyecto.</p>
+        </div>
+
+        <div class="panel">
+            <h2>La Alquimia</h2>
+            <h3>Componentes Nobles</h3>
+            <p>Nuestra fórmula secreta rechaza el testeo animal y los químicos abrasivos. Utilizamos mantecas de Cacao y Karité, logrando un impacto económico positivo para proveedores locales y cuidando la piel de forma real.</p>
+        </div>
+    </div>
+
+    <div id="info-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">×</button>
+            <h2 id="m-title" class="modal-title">Título</h2>
+            
+            <div class="modal-section">
+                <h4 id="m-color-1">📖 Historia</h4>
+                <p id="m-hist">Texto historia...</p>
+            </div>
+            <div class="modal-section">
+                <h4 id="m-color-2">🎯 Relevancia</h4>
+                <p id="m-rel">Texto relevancia...</p>
+            </div>
+            <div class="modal-section">
+                <h4 id="m-color-3">✨ ¿Qué Aporta?</h4>
+                <p id="m-apor">Texto aporte...</p>
+            </div>
+            <div class="modal-section">
+                <h4 id="m-color-4">📌 Define el Proyecto</h4>
+                <p id="m-def">Texto define...</p>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // --- LOGICA DE NAVEGACIÓN (SINGLE PAGE APPLICATION) ---
-        function showProject(sectionId, btnElement, activeClass) {
-            // 1. Ocultar todas las secciones
-            const sections = document.querySelectorAll('.project-section');
-            sections.forEach(sec => {
-                sec.classList.remove('active');
+        // BASE DE DATOS INTERNA DE INFORMACIÓN PROFUNDA
+        const loreData = {
+            'palet_coctel': {
+                title: "The Green Emerald (PaletDo27)",
+                color: "var(--palet-gold)",
+                historia: "Inspirado en las técnicas de botánica de la coctelería de 1920, pero utilizando métodos de destilación en frío modernos para extraer el sabor exacto de los cítricos y la menta sin generar fermentación alcohólica.",
+                relevancia: "Es el eje central de PaletDo27. Demuestra que no necesitas alcohol para disfrutar de una bebida compleja, con capas de sabor y una presentación de alta gama.",
+                aporta: "Aporta el 100% de la experiencia sensorial y estética de un bar premium, eliminando las toxinas. Garantiza un 60% menos de calorías y 0% de impacto negativo al día siguiente.",
+                define: "Define al proyecto como una solución de 'Lujo Inclusivo'. Elegancia consciente para personas seguras de sí mismas."
+            },
+            'palet_psicologia': {
+                title: "La Psicología del Consumidor",
+                color: "var(--palet-gold)",
+                historia: "Históricamente, el humano ha utilizado las bebidas embriagantes como un lubricante social. Desde los rituales antiguos hasta las fiestas corporativas modernas, el no beber ha sido motivo de exclusión.",
+                relevancia: "PaletDo27 no vende líquidos, vende 'Pertenencia'. Ataca directamente la presión de grupo, permitiendo que el usuario se integre sin dar explicaciones.",
+                aporta: "Aporta seguridad mental. Permite que el consumidor asista a una reunión familiar o de negocios, comparta un brindis con una copa idéntica a las demás, y mantenga su lucidez y toma de decisiones intacta.",
+                define: "Define al proyecto como una herramienta de bienestar social y salud mental."
+            },
+            'bambu_lapicero': {
+                title: "El Lapicero Bambugraft",
+                color: "var(--bambu-green)",
+                historia: "El bambú ha sido utilizado en la escritura desde las antiguas dinastías chinas. Hoy, Bambugraft rescata esa nobleza natural para reemplazar el invento del plástico de 1938 que contaminó el planeta.",
+                relevancia: "Aborda uno de los contaminantes silenciosos más masivos del mundo: los útiles de oficina y escolares de un solo uso.",
+                aporta: "Cuando la tinta de un Bambugraft se acaba, su cuerpo vuelve a la tierra. Al ser una gramínea natural, es 100% compostable, reduciendo la huella de carbono del usuario drásticamente.",
+                define: "Define al proyecto como 'Responsabilidad Ecológica Tangible'. Escribir el futuro sin destruir el presente."
+            },
+            'amaru_cosmetica': {
+                title: "Fórmula Secreta Amarú",
+                color: "var(--amaru-pink)",
+                historia: "La cosmética industrial nos acostumbró a leer etiquetas llenas de nombres químicos impronunciables derivados del petróleo. Amarú retorna a las recetas ancestrales usando manteca de karité y aceites puros.",
+                relevancia: "Demuestra que la cultura organizacional y la rentabilidad económica pueden ir de la mano con el cuidado ambiental y la nula crueldad animal.",
+                aporta: "Aporta nutrientes biológicos reales a la piel del consumidor, mientras que económicamente apoya a los proveedores locales y reduce los residuos tóxicos gracias a sus empaques biodegradables.",
+                define: "Define al proyecto como 'Belleza Ética y Sostenible'. Una iniciativa donde todos ganan: el usuario, la economía local y el planeta."
+            }
+        };
+
+        // Lógica de Pestañas
+        function openBrochure(brochureId, btnElement, colorClass) {
+            document.getElementById('brochure-palet').style.display = 'none';
+            document.getElementById('brochure-bambu').style.display = 'none';
+            document.getElementById('brochure-amaru').style.display = 'none';
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active-palet', 'active-bambu', 'active-amaru');
             });
 
-            // 2. Quitar estilos activos de todos los botones
-            const buttons = document.querySelectorAll('.nav-btn');
-            buttons.forEach(btn => {
-                btn.className = 'nav-btn'; // Resetea las clases
+            document.getElementById(brochureId).style.display = 'block';
+            btnElement.classList.add(colorClass);
+        }
+
+        // Lógica del Ratón
+        const orb = document.getElementById("glow-orb");
+        document.addEventListener("mousemove", (e) => {
+            requestAnimationFrame(() => {
+                orb.style.left = e.clientX + 'px';
+                orb.style.top = e.clientY + 'px';
+            });
+        });
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if(btn.innerText.includes('PaletDo27')) orb.style.background = 'radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 60%)';
+                if(btn.innerText.includes('Bambugraft')) orb.style.background = 'radial-gradient(circle, rgba(46, 204, 113, 0.15) 0%, transparent 60%)';
+                if(btn.innerText.includes('Amarú')) orb.style.background = 'radial-gradient(circle, rgba(255, 118, 117, 0.15) 0%, transparent 60%)';
+            });
+        });
+
+        // FUNCIONES DEL MODAL
+        function openModal(dataKey) {
+            const data = loreData[dataKey];
+            if(!data) return;
+
+            // Inyectar la información en la tarjeta
+            document.getElementById('m-title').innerText = data.title;
+            document.getElementById('m-title').style.color = data.color;
+            
+            // Colorear los subtítulos según el proyecto
+            for(let i=1; i<=4; i++) { document.getElementById('m-color-'+i).style.color = data.color; }
+
+            document.getElementById('m-hist').innerText = data.historia;
+            document.getElementById('m-rel').innerText = data.relevancia;
+            document.getElementById('m-apor').innerText = data.aporta;
+            document.getElementById('m-def').innerText = data.define;
+
+            // Mostrar el modal
+            document.getElementById('info-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('info-modal').classList.remove('active');
+        }
+
+        // Cerrar modal si hacen clic fuera del cuadro negro
+        window.onclick = function(event) {
+            const modal = document.getElementById('info-modal');
+            if (event.target == modal) { closeModal(); }
+        }
+    </script>
+</body>
+</html>
